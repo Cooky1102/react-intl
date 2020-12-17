@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useMemo } from "react";
+import { IntlProvider } from "react-intl";
+import FormattedMessageSection from "./components/formatterdMessageSection";
+import FormatterdDateSection from "./components/formatterdDateSection";
+import FormatterdTimeSection from "./components/formatterdTimeSection";
+import FormattedNumberSection from "./components/formattedNumberSection";
+import enMsg from "./i18n/en";
+import zhMsg from "./i18n/zh";
 
-function App() {
+export default function App() {
+  const [locale, setLocale] = useState("zh");
+
+  const message = useMemo(() => {
+    switch (locale) {
+      case "en":
+        return enMsg;
+      case "zh":
+        return zhMsg;
+      default:
+        return zhMsg;
+    }
+  }, [locale]);
+
+  const handleChangeLocale = e => {
+    setLocale(e.target.value);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <IntlProvider messages={message} locale={locale}>
+      <select value={locale} onChange={handleChangeLocale}>
+        <option value="zh">中文</option>
+        <option value="en">English</option>
+      </select>
+
+      <ul>
+        <li>
+          <FormattedMessageSection />
+        </li>
+        <li>
+          <FormatterdDateSection />
+        </li>
+        <li>
+          <FormatterdTimeSection />
+        </li>
+        <li>
+          <FormattedNumberSection />
+        </li>
+      </ul>
+    </IntlProvider>
   );
 }
-
-export default App;
